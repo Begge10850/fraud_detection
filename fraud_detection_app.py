@@ -64,6 +64,7 @@ def sequential_predict(input_df, rf_model, xgb_model, scaler):
         return pd.DataFrame()
 
 # --- Streamlit App ---
+st.set_page_config(page_title="Fraud Detection App", layout="centered")
 st.title("🚨 Fraud Detection System")
 
 st.markdown("Upload a transaction CSV with the following columns: **Time, V1–V28, Amount**")
@@ -83,9 +84,29 @@ if uploaded_file:
 
             if not result_df.empty:
                 st.success("✅ Predictions complete.")
-                st.dataframe(result_df[["RF_Fraud_Prob", "XGB_Fraud_Prob", "Decision"]])
 
-                # Download button
+                # 🎨 Color styling for decisions
+                def color_decision(val):
+                    if val == "Allow":
+                        return "background-color: #d4edda; color: #155724;"
+                    elif val == "Flag for Review":
+                        return "background-color: #fff3cd; color: #856404;"
+                    elif val == "Auto-Block":
+                        return "background-color: #f8d7da; color: #721c24;"
+                    return ""
+
+                styled_df = result_df[["RF_Fraud_Prob", "XGB_Fraud_Prob", "Decision"]].style.applymap(
+                    color_decision, subset=["Decision"]
+                )
+                st.dataframe(styled_df, use_container_width=True)
+
+                # 📊 Summary chart
+                st.markdown("### 📊 Decision Summary")
+                decision_counts = result_df["Decision"].value_counts().reset_index()
+                decision_counts.columns = ["Decision", "Count"]
+                st.bar_chart(data=decision_counts.set_index("Decision"))
+
+                # 📥 Download button
                 csv = result_df.to_csv(index=False).encode('utf-8')
                 st.download_button(
                     label="Download predictions as CSV",
