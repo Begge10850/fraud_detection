@@ -27,30 +27,41 @@ def preprocess_input(df, scaler):
 
 # --- Sequential Prediction Function ---
 def sequential_predict(input_df, rf_model, xgb_model, scaler):
-    processed = preprocess_input(input_df, scaler)
+    try:
+        processed = preprocess_input(input_df, scaler)
 
-    # 🔍 Debug: Show actual columns passed to model
-    st.write("\n📊 Processed DataFrame columns:")
-    st.write(processed.columns.tolist())
+        # 🔍 Always print the actual columns the model is receiving
+        st.write("📊 Processed DataFrame columns (before prediction):")
+        st.write(processed.columns.tolist())
 
-    rf_scores = rf_model.predict_proba(processed)[:, 1]
-    xgb_scores = xgb_model.predict_proba(processed)[:, 1]
+        rf_scores = rf_model.predict_proba(processed)[:, 1]
+        xgb_scores = xgb_model.predict_proba(processed)[:, 1]
 
-    decisions = []
-    for rf_score, xgb_score in zip(rf_scores, xgb_scores):
-        if rf_score >= 0.83:
-            if xgb_score >= 0.99:
-                decisions.append("Auto-Block")
+        decisions = []
+        for rf_score, xgb_score in zip(rf_scores, xgb_scores):
+            if rf_score >= 0.83:
+                if xgb_score >= 0.99:
+                    decisions.append("Auto-Block")
+                else:
+                    decisions.append("Flag for Review")
             else:
-                decisions.append("Flag for Review")
-        else:
-            decisions.append("Allow")
+                decisions.append("Allow")
 
-    result = processed.copy()
-    result["RF_Fraud_Prob"] = rf_scores
-    result["XGB_Fraud_Prob"] = xgb_scores
-    result["Decision"] = decisions
-    return result
+        result = processed.copy()
+        result["RF_Fraud_Prob"] = rf_scores
+        result["XGB_Fraud_Prob"] = xgb_scores
+        result["Decision"] = decisions
+        return result
+
+    except Exception as e:
+        # 🔥 Show what went wrong during prediction
+        st.error(f"🚨 Internal prediction error: {e}")
+        st.write("✅ Final processed input shape:")
+        st.write(processed.shape)
+        st.write("📊 Final column names:")
+        st.write(processed.columns.tolist())
+        return pd.DataFrame()
+
 
 # --- Streamlit App ---
 st.title("🚨 Fraud Detection System")
