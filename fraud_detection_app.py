@@ -14,6 +14,10 @@ model_features = joblib.load("model_features.pkl")  # ✅ Load column order
 def preprocess_input(df, scaler):
     df = df.copy()
 
+    # Drop target column if present
+    if 'Class' in df.columns:
+        df.drop(columns='Class', inplace=True)
+
     # Step 1: Check column presence
     expected_base_columns = ['Time'] + [f'V{i}' for i in range(1, 29)] + ['Amount']
     missing_cols = [col for col in expected_base_columns if col not in df.columns]
