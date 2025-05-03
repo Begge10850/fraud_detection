@@ -13,16 +13,38 @@ model_features = joblib.load("model_features.pkl")  # ✅ Load column order
 # --- Preprocessing Function ---
 def preprocess_input(df, scaler):
     df = df.copy()
+
+    # Step 1: Check column presence
     expected_base_columns = ['Time'] + [f'V{i}' for i in range(1, 29)] + ['Amount']
+    missing_cols = [col for col in expected_base_columns if col not in df.columns]
 
-    if not all(col in df.columns for col in expected_base_columns):
-        raise ValueError("Missing required columns in input data.")
+    if missing_cols:
+        raise ValueError(f"Missing required columns: {missing_cols}")
 
-    df[['Time', 'Amount']] = scaler.transform(df[['Time', 'Amount']])
-    time_unscaled = df['Time'] * scaler.scale_[0] + scaler.mean_[0]
-    df['Hour'] = (time_unscaled // 3600).astype(int)
+    # Step 2: Apply scaler and print intermediate state
+    try:
+        df[['Time', 'Amount']] = scaler.transform(df[['Time', 'Amount']])
+    except Exception as e:
+        st.error(f"🚨 Scaling error: {e}")
+        st.write("Columns present during scaling:", df.columns.tolist())
+        raise
 
-    df = df.copy()[model_features]  # ✅ Enforce exact order
+    # Step 3: Create 'Hour' from unscaled Time
+    try:
+        time_unscaled = df['Time'] * scaler.scale_[0] + scaler.mean_[0]
+        df['Hour'] = (time_unscaled // 3600).astype(int)
+    except Exception as e:
+        st.error(f"🚨 Hour generation error: {e}")
+        raise
+
+    # Step 4: Enforce exact column order
+    try:
+        df = df[model_features]
+    except Exception as e:
+        st.error(f"🚨 Column ordering error: {e}")
+        st.write("Available columns:", df.columns.tolist())
+        st.write("Expected columns:", model_features)
+        raise
     return df
 
 # --- Sequential Prediction Function ---
