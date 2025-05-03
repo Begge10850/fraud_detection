@@ -48,7 +48,7 @@ def sequential_predict(input_df, rf_model, xgb_model, scaler):
     return result
 
 # --- Streamlit App ---
-st.title("🚨 Fraud Detection System")
+st.title("🚨 Shika Fraud Detection System")
 st.markdown("Upload a transaction CSV with the following columns: **Time, V1-V28, Amount**")
 
 uploaded_file = st.file_uploader("Upload your CSV file", type=["csv"])
