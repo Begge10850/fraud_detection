@@ -59,8 +59,8 @@ def sequential_predict(input_df, rf_model, xgb_model, scaler):
         return pd.DataFrame()
 
 # --- Streamlit App ---
-st.set_page_config(page_title="Fraud Detection App", layout="centered")
-st.title("🚨 Fraud Detection System")
+st.set_page_config(page_title="Shika Fraud Detection App", layout="centered")
+st.title("🚨 Shika Fraud Detection System")
 
 st.markdown("Upload a transaction CSV with the following columns: **Time, V1–V28, Amount**")
 st.markdown("💡 **Need a sample file to test?** [Click here to download one](https://your-link-here.com/sample_input.csv)")
