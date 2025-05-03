@@ -14,24 +14,19 @@ model_features = joblib.load("model_features.pkl")
 def preprocess_input(df, scaler):
     df = df.copy()
 
-    # Drop target column if present
     if 'Class' in df.columns:
         df.drop(columns='Class', inplace=True)
 
-    # Check required columns
     expected_base_columns = ['Time'] + [f'V{i}' for i in range(1, 29)] + ['Amount']
     missing_cols = [col for col in expected_base_columns if col not in df.columns]
     if missing_cols:
         raise ValueError(f"Missing required columns: {missing_cols}")
 
-    # Scale Time and Amount
     df[['Time', 'Amount']] = scaler.transform(df[['Time', 'Amount']].values)
 
-    # Create 'Hour' feature
     time_unscaled = df['Time'] * scaler.scale_[0] + scaler.mean_[0]
     df['Hour'] = (time_unscaled // 3600).astype(int)
 
-    # Reorder columns to match training
     df = df[model_features]
     return df
 
@@ -64,8 +59,8 @@ def sequential_predict(input_df, rf_model, xgb_model, scaler):
         return pd.DataFrame()
 
 # --- Streamlit App ---
-st.set_page_config(page_title="Shika Fraud Detection App", layout="centered")
-st.title("🚨 Shika Fraud Detection System")
+st.set_page_config(page_title="Fraud Detection App", layout="centered")
+st.title("🚨 Fraud Detection System")
 
 st.markdown("Upload a transaction CSV with the following columns: **Time, V1–V28, Amount**")
 st.markdown("💡 **Need a sample file to test?** [Click here to download one](https://your-link-here.com/sample_input.csv)")
@@ -85,31 +80,22 @@ if uploaded_file:
             if not result_df.empty:
                 st.success("✅ Predictions complete.")
 
-                # 🎨 Color styling for decisions
-                def color_decision(val):
-                    if val == "Allow":
-                        return "background-color: #d4edda; color: #155724;"
-                    elif val == "Flag for Review":
-                        return "background-color: #fff3cd; color: #856404;"
-                    elif val == "Auto-Block":
-                        return "background-color: #f8d7da; color: #721c24;"
-                    return ""
+                # Show full results
+                st.markdown("### 🔍 All Transactions")
+                st.dataframe(result_df[["RF_Fraud_Prob", "XGB_Fraud_Prob", "Decision"]], use_container_width=True)
 
-                styled_df = result_df[["RF_Fraud_Prob", "XGB_Fraud_Prob", "Decision"]].style.applymap(
-                    color_decision, subset=["Decision"]
-                )
-                st.dataframe(styled_df, use_container_width=True)
+                # Show only suspicious transactions
+                suspicious_df = result_df[result_df["Decision"].isin(["Auto-Block", "Flag for Review"])]
+                if not suspicious_df.empty:
+                    st.markdown("### 🚨 Suspected Fraud Transactions")
+                    st.dataframe(suspicious_df[["RF_Fraud_Prob", "XGB_Fraud_Prob", "Decision"]], use_container_width=True)
+                else:
+                    st.info("✅ No suspicious transactions found in this file.")
 
-                # 📊 Summary chart
-                st.markdown("### 📊 Decision Summary")
-                decision_counts = result_df["Decision"].value_counts().reset_index()
-                decision_counts.columns = ["Decision", "Count"]
-                st.bar_chart(data=decision_counts.set_index("Decision"))
-
-                # 📥 Download button
+                # Download button
                 csv = result_df.to_csv(index=False).encode('utf-8')
                 st.download_button(
-                    label="Download predictions as CSV",
+                    label="Download full predictions as CSV",
                     data=csv,
                     file_name='fraud_predictions.csv',
                     mime='text/csv'
