@@ -8,7 +8,7 @@ from sklearn.preprocessing import StandardScaler
 best_rf_model = joblib.load("rf_model.pkl")
 best_xgb_model = joblib.load("xgb_model.pkl")
 scaler = joblib.load("scaler.pkl")
-model_features = joblib.load("model_features.pkl")  # ✅ Load feature column order used during training
+model_features = joblib.load("model_features.pkl")  # ✅ Load column order
 
 # --- Preprocessing Function ---
 def preprocess_input(df, scaler):
@@ -22,12 +22,17 @@ def preprocess_input(df, scaler):
     time_unscaled = df['Time'] * scaler.scale_[0] + scaler.mean_[0]
     df['Hour'] = (time_unscaled // 3600).astype(int)
 
-    # ✅ Return in exact training order
-    return df[model_features]
+    df = df.copy()[model_features]  # ✅ Enforce exact order
+    return df
 
 # --- Sequential Prediction Function ---
 def sequential_predict(input_df, rf_model, xgb_model, scaler):
     processed = preprocess_input(input_df, scaler)
+
+    # 🔍 Debug: Show actual columns passed to model
+    st.write("\n📊 Processed DataFrame columns:")
+    st.write(processed.columns.tolist())
+
     rf_scores = rf_model.predict_proba(processed)[:, 1]
     xgb_scores = xgb_model.predict_proba(processed)[:, 1]
 
@@ -48,7 +53,7 @@ def sequential_predict(input_df, rf_model, xgb_model, scaler):
     return result
 
 # --- Streamlit App ---
-st.title("🚨 Shika Fraud Detection System")
+st.title("🚨 Fraud Detection System")
 st.markdown("Upload a transaction CSV with the following columns: **Time, V1-V28, Amount**")
 
 uploaded_file = st.file_uploader("Upload your CSV file", type=["csv"])
@@ -61,6 +66,10 @@ if uploaded_file:
         if not all(col in input_df.columns for col in required_cols):
             st.error("❌ The uploaded CSV is missing required columns.")
         else:
+            # 🔍 Debug: Show expected column structure
+            st.write("✅ Model expects features in this order:")
+            st.write(model_features)
+
             result_df = sequential_predict(input_df, best_rf_model, best_xgb_model, scaler)
 
             st.success("✅ Predictions complete.")
