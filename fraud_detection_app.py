@@ -40,7 +40,7 @@ def sequential_predict(input_df, rf_model, xgb_model, scaler):
         else:
             decisions.append("Allow")
 
-    result = input_df.copy()
+    result = processed.copy()
     result["RF_Fraud_Prob"] = rf_scores
     result["XGB_Fraud_Prob"] = xgb_scores
     result["Decision"] = decisions
