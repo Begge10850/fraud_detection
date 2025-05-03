@@ -8,6 +8,7 @@ from sklearn.preprocessing import StandardScaler
 best_rf_model = joblib.load("rf_model.pkl")
 best_xgb_model = joblib.load("xgb_model.pkl")
 scaler = joblib.load("scaler.pkl")
+model_features = joblib.load("model_features.pkl")  # ✅ Load feature column order used during training
 
 # --- Preprocessing Function ---
 def preprocess_input(df, scaler):
@@ -21,8 +22,8 @@ def preprocess_input(df, scaler):
     time_unscaled = df['Time'] * scaler.scale_[0] + scaler.mean_[0]
     df['Hour'] = (time_unscaled // 3600).astype(int)
 
-    expected_columns = expected_base_columns + ['Hour']
-    return df[expected_columns]
+    # ✅ Return in exact training order
+    return df[model_features]
 
 # --- Sequential Prediction Function ---
 def sequential_predict(input_df, rf_model, xgb_model, scaler):
