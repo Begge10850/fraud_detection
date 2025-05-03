@@ -6,7 +6,7 @@ A complete end-to-end **fraud detection project** using machine learning models 
 
 ## 🌐 Live App
 
-> **[Try the Fraud Detection App]([https://your-app-link.streamlit.app](https://shikafraud.streamlit.app/))**
+> **[Try the Fraud Detection App](https://shikafraud.streamlit.app/)**
 > Upload a CSV with transactions and get fraud predictions instantly.
 
 ---
