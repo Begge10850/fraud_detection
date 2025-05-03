@@ -27,7 +27,7 @@ def preprocess_input(df, scaler):
 
     # Step 2: Apply scaler and print intermediate state
     try:
-        df[['Time', 'Amount']] = scaler.transform(df[['Time', 'Amount']])
+        df[['Time', 'Amount']] = scaler.transform(df[['Time', 'Amount']].values)
     except Exception as e:
         st.error(f"🚨 Scaling error: {e}")
         st.write("Columns present during scaling:", df.columns.tolist())
