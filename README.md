@@ -15,7 +15,8 @@ A complete end-to-end **fraud detection project** using machine learning models 
 
 This project addresses the critical issue of detecting **fraudulent financial transactions**, which are rare but highly damaging.
 
-🛡️ System Usage Context
+## 🛡️ System Usage Context
+
 This system is designed based on a specific dataset structure (e.g., PCA-transformed features V1–V28, Time, Amount) and assumes similar feature generation and scaling pipelines.
 It is not intended for direct use across all institutions, as different companies have unique data schemas and transaction monitoring pipelines.
 Therefore, this system is best suited for in-house use, educational prototyping, or adaptation by teams whose input data matches the original format.
