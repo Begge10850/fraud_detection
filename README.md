@@ -52,7 +52,7 @@ Therefore, this system is best suited for in-house use, educational prototyping,
 ### 2. Handling Class Imbalance
 
 * Dataset is \~0.17% fraud (492 out of 284,807)
-* We used a **hybrid resampling strategy**:
+* I used a **hybrid resampling strategy**:
 
   * ✅ **RandomUnderSampler**: Reduced majority class to \~10,000
   * ✅ **SMOTE**: Oversampled minority class to match
