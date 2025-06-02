@@ -154,7 +154,7 @@ Student, Data Science & AI — GISMA University
 
 ## 🚩 Disclaimer
 
-This is a student portfolio project. The dataset is anonymized, and this app should not be used for real-world financial decisions.
+This is a student portfolio project. The dataset is anonymized, and this app should not be used for real-world financial decisions as its justa simple prototype of how a financial company can detect frauds from their transactions.
 
 ---
 
