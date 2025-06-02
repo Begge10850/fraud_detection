@@ -162,8 +162,7 @@ We plan to:
 * ✅ XGBoost acts as **confirmation backup**
 
 ### Model Comparison
-
-3️⃣ **Model Comparison**  
+ 
 ![Model Comparison](https://github.com/Begge10850/fraud_detection/blob/main/app_images/model_comparison.png)
 
 ---
