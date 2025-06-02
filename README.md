@@ -14,6 +14,22 @@ A complete end-to-end **fraud detection project** using machine learning models 
 
 ---
 
+---
+
+## 📸 Screenshots
+Here are a few views of the deployed Streamlit app.
+
+1️⃣ **App Homepage**  
+![App Homepage](https://github.com/Begge10850/fraud_detection/blob/main/app_images/Home_page.png)
+
+2️⃣ **App Function 1**  
+![Category & Basket](https://github.com/Begge10850/fraud_detection/blob/main/app_images/app_functioning_1.png)
+
+3️⃣ **App Function 2**  
+![Recommendations](https://github.com/Begge10850/fraud_detection/blob/main/app_images/app_functioning_2.png)
+
+---
+
 ## 🔍 Project Overview
 
 This project addresses the critical issue of detecting **fraudulent financial transactions**, which are rare but highly damaging.
@@ -144,6 +160,11 @@ We plan to:
 
 * ✅ Random Forest chosen as **primary model**
 * ✅ XGBoost acts as **confirmation backup**
+
+### Model Comparison
+
+3️⃣ **Model Comparison**  
+![Model Comparison](https://github.com/Begge10850/fraud_detection/blob/main/app_images/model_comparison.png)
 
 ---
 
