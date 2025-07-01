@@ -63,7 +63,7 @@ st.set_page_config(page_title="Shika Fraud Detection App", layout="centered")
 st.title("🚨 Shika Fraud Detection System")
 
 st.markdown("Upload a transaction CSV with the following columns: **Time, V1–V28, Amount**")
-st.markdown("💡 **Need a sample file to test?** [Click here to download one](https://github.com/Begge10850/fraud_detection/releases/latest)")
+st.markdown("💡 **Need a sample file to test?** [Click here to download one]()")
 
 uploaded_file = st.file_uploader("Upload your CSV file", type=["csv"])
 
